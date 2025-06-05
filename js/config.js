@@ -438,6 +438,14 @@ const siteConfig = {
             instagram: "",
             linkedin: ""
         },
+        newsletter: {
+            title: "Our Newsletter",
+            description: "Subscribe to our newsletter and receive the latest news about our products and services!",
+            buttonText: "Subscribe",
+            successMessage: "Your subscription request has been sent. Thank you!",
+            loadingMessage: "Loading",
+            errorMessage: "An error has occurred. Please try again."
+        },
         copyright: {
             sitename: "IntegriStruct",
             year: "2025",

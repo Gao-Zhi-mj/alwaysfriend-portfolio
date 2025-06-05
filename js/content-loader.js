@@ -17,6 +17,28 @@ document.addEventListener('DOMContentLoaded', function() {
         `<li><a href="${item.link}" ${item.active ? 'class="active"' : ''}>${item.text}</a></li>`
     ).join('');
     
+    // Initialize scroll spy for navigation
+    const navMenuLinks = document.querySelectorAll('.navmenu a');
+    
+    function navMenuScrollSpy() {
+        navMenuLinks.forEach(navLink => {
+            if (!navLink.hash) return;
+            let section = document.querySelector(navLink.hash);
+            if (!section) return;
+            let position = window.scrollY + 200;
+            if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
+                document.querySelectorAll('.navmenu a.active').forEach(link => link.classList.remove('active'));
+                navLink.classList.add('active');
+            } else {
+                navLink.classList.remove('active');
+            }
+        });
+    }
+
+    // Add scroll event listener for navigation highlighting
+    window.addEventListener('load', navMenuScrollSpy);
+    document.addEventListener('scroll', navMenuScrollSpy);
+
     // Update CTA Buttons
     document.querySelectorAll('.cta-btn').forEach(btn => {
         btn.href = siteConfig.header.ctaButton.link;
@@ -93,21 +115,49 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         if (typeof PureCounter === 'function') {
             const pure = new PureCounter({
-                selector: '.purecounter',    // Element Query Selector
-                start: 0,                    // Starting number
-                end: 100,                    // End number
-                duration: 2,                 // Count duration in seconds
-                delay: 10,                   // Delay between each number in ms
-                once: true,                  // Count only once
-                repeat: false,               // Repeat count
-                decimals: 0,                 // Decimal places
-                legacy: true,                // Legacy mode (counter stops on each number)
-                filesizing: false,           // Enable/Disable file size formatting
-                currency: false,             // Enable/Disable currency formatting
-                separator: false,            // Enable/Disable separator formatting
+                selector: '.purecounter',    
+                start: 0,                    
+                end: 100,                    
+                duration: 2,                 
+                delay: 10,                   
+                once: true,                  
+                repeat: false,               
+                decimals: 0,                 
+                legacy: true,                
+                filesizing: false,           
+                currency: false,             
+                separator: false,            
             });
         }
     }, 100);
+
+    // Add scroll-based navigation highlighting
+    const navLinks = document.querySelectorAll('.navmenu a');
+    const sections = document.querySelectorAll('section[id]');
+
+    function activateNavByScroll() {
+        const scrollY = window.scrollY;
+
+        sections.forEach(current => {
+            const sectionHeight = current.offsetHeight;
+            const sectionTop = current.offsetTop - 100;
+            const sectionId = current.getAttribute('id');
+
+            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
+
+    // Add scroll event listener
+    window.addEventListener('scroll', activateNavByScroll);
+    // Activate nav on initial load
+    activateNavByScroll();
 
     // Load Services Section
     document.querySelector('#services .section-title h2').textContent = siteConfig.services.title;
@@ -255,6 +305,17 @@ document.addEventListener('DOMContentLoaded', function() {
         <p class="mt-3"><strong>Phone:</strong> <span>${siteConfig.footer.contact.phone}</span></p>
         <p><strong>Email:</strong> <span>${siteConfig.footer.contact.email}</span></p>
     `;
+
+    // Footer Newsletter
+    const footerNewsletter = document.querySelector('footer .footer-newsletter');
+    if (footerNewsletter) {
+        footerNewsletter.querySelector('h4').textContent = siteConfig.footer.newsletter.title;
+        footerNewsletter.querySelector('p').textContent = siteConfig.footer.newsletter.description;
+        footerNewsletter.querySelector('input[type="submit"]').value = siteConfig.footer.newsletter.buttonText;
+        footerNewsletter.querySelector('.loading').textContent = siteConfig.footer.newsletter.loadingMessage;
+        footerNewsletter.querySelector('.error-message').textContent = siteConfig.footer.newsletter.errorMessage;
+        footerNewsletter.querySelector('.sent-message').textContent = siteConfig.footer.newsletter.successMessage;
+    }
 
     // Footer Social Links
     const socialLinks = document.querySelector('footer .social-links');
